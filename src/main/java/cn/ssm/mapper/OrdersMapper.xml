@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.ssm.mapper.OrdersMapper" >
+  <resultMap id="BaseResultMap" type="cn.ssm.po.Orders" >
+    <id column="oid" property="oid" jdbcType="INTEGER" />
+    <result column="total" property="total" jdbcType="DOUBLE" />
+    <result column="ordertime" property="ordertime" jdbcType="TIMESTAMP" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="addr" property="addr" jdbcType="VARCHAR" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <collection property="orderitemList" ofType="cn.ssm.po.Orderitem" autoMapping="true" fetchType="lazy">
+    <id column="itemid" property="itemid"></id>
+    </collection>
+  </resultMap>
+
+
+  <resultMap id="user_order" type="orders" autoMapping="true" >
+    <id column="oid" property="oid"></id>
+    <association property="user" column="uid" javaType="User" select="cn.ssm.mapper.UserMapper.byid" fetchType="lazy">
+    </association>
+  </resultMap>
+
+  <resultMap id="user_order2" type="orders">
+     <association property="user" column="uid" resultMap="cn.ssm.mapper.UserMapper.BaseResultMap" fetchType="lazy"></association>
+  </resultMap>
+
+  <select id="allorder2" resultMap="user_order">
+    select * from orders
+  </select>
+
+  <!--<select id="allorder2" resultMap="BaseResultMap">-->
+       <!--select u.phone AS phone,o.name AS  name,u.email ,o.* from orders o LEFT JOIN  user u ON o.uid = u.uid-->
+  <!--</select>-->
+
+  <select id="allorders" resultMap="BaseResultMap">
+SELECT o.*,os.* from orders o,orderitem os WHERE o.oid=os.oid
+
+  </select>
+
+</mapper>
